@@ -1,3 +1,6 @@
 spring:
   application:
     name: SorokChatServerSpring
+tokens:
+  signing-key: '{"kty": "oct", "k": "KpVIlEnXyj1IL6a4UhpryHyck2GiHmHY"}'
+  encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
