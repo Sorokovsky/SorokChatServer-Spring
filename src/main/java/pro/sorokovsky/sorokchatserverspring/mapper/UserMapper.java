@@ -3,6 +3,7 @@ package pro.sorokovsky.sorokchatserverspring.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import pro.sorokovsky.sorokchatserverspring.contract.GetUserPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.NewUserPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.UpdateUserPayload;
 import pro.sorokovsky.sorokchatserverspring.entity.UserEntity;
@@ -27,20 +28,6 @@ public class UserMapper {
                 .password(entity.getPassword())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
-                .build();
-    }
-
-    public UserEntity toEntity(UserModel model) {
-        return UserEntity
-                .builder()
-                .id(model.getId())
-                .email(model.getEmail())
-                .firstName(model.getFirstName())
-                .lastName(model.getLastName())
-                .middleName(model.getMiddleName())
-                .password(model.getPassword())
-                .createdAt(model.getCreatedAt())
-                .updatedAt(model.getUpdatedAt())
                 .build();
     }
 
@@ -80,5 +67,17 @@ public class UserMapper {
     private String choosePassword(String older, String newer) {
         if (newer == null || newer.isBlank()) return older;
         return passwordEncoder.encode(newer);
+    }
+
+    public GetUserPayload toGet(UserModel model) {
+        return new GetUserPayload(
+                model.getId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getEmail(),
+                model.getFirstName(),
+                model.getLastName(),
+                model.getMiddleName()
+        );
     }
 }
