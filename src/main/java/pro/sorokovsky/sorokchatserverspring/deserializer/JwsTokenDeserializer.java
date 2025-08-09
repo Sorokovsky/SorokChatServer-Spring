@@ -3,7 +3,6 @@ package pro.sorokovsky.sorokchatserverspring.deserializer;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jwt.SignedJWT;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import pro.sorokovsky.sorokchatserverspring.exception.TokenNotParsedException;
 import java.text.ParseException;
 
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class JwsTokenDeserializer extends JwtTokenDeserializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwsTokenDeserializer.class);
 
