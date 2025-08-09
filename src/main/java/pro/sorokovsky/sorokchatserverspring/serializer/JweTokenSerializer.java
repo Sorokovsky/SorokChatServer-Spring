@@ -16,7 +16,7 @@ public class JweTokenSerializer extends JwtTokenSerializer {
 
     private final JWEEncrypter encrypter;
     private JWEAlgorithm algorithm = JWEAlgorithm.DIR;
-    private EncryptionMethod method = EncryptionMethod.A128GCM;
+    private EncryptionMethod method = EncryptionMethod.A192GCM;
 
     public JweTokenSerializer algorithm(JWEAlgorithm algorithm) {
         this.algorithm = algorithm;

@@ -32,7 +32,7 @@ public class AuthenticationController {
     ) {
         final var created = service.register(payload);
         return ResponseEntity
-                .created(uriBuilder.fragment("get-me").build().toUri())
+                .created(uriBuilder.pathSegment("authentication/get-me").build().toUri())
                 .body(mapper.toGet(created));
     }
 

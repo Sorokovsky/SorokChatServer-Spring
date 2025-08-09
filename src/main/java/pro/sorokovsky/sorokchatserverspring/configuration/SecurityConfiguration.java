@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +16,6 @@ import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -25,10 +24,13 @@ public class SecurityConfiguration {
     ) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/authentication/register", "/authentication/login").anonymous()
+                        .requestMatchers("/authentication/get-me", "/authentication/logout").authenticated()
                         .anyRequest().authenticated()
                 )
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionAuthenticationStrategy(jwtSessionStrategy)
                 );
         return http.build();
