@@ -2,6 +2,9 @@ package pro.sorokovsky.sorokchatserverspring.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pro.sorokovsky.sorokchatserverspring.contract.NewUserPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.UpdateUserPayload;
@@ -15,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UsersService {
+public class UsersService implements UserDetailsService {
     private final UsersRepository repository;
     private final UserMapper mapper;
 
@@ -45,5 +48,10 @@ public class UsersService {
         final var candidate = getById(id).orElseThrow(UserNotFoundException::new);
         repository.deleteById(id);
         return candidate;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return getByEmail(username).orElseThrow(UserNotFoundException::new);
     }
 }

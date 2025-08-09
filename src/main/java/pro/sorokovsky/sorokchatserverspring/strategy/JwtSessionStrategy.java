@@ -2,7 +2,7 @@ package pro.sorokovsky.sorokchatserverspring.strategy;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -11,7 +11,7 @@ import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.serializer.TokenSerializer;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 
-@RequiredArgsConstructor
+@Builder
 public class JwtSessionStrategy implements SessionAuthenticationStrategy {
     private final TokenSerializer accessTokenSerializer;
     private final TokenSerializer refreshTokenSerializer;
