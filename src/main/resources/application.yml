@@ -1,6 +1,14 @@
 spring:
   application:
     name: SorokChatServerSpring
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgres://localhost:5430/postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
 tokens:
   signing-key: '{"kty": "oct", "k": "KpVIlEnXyj1IL6a4UhpryHyck2GiHmHY"}'
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
