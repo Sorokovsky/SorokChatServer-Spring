@@ -5,10 +5,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: postgres
-    url: jdbc:postgres://localhost:5430/postgres
+    url: jdbc:postgresql://localhost:5430/postgres
   jpa:
     hibernate:
       ddl-auto: update
 tokens:
-  signing-key: '{"kty": "oct", "k": "KpVIlEnXyj1IL6a4UhpryHyck2GiHmHY"}'
+  signing-key: '{"kty": "oct", "k": "UyPYbEOm8BVKMfndHCKPXNEkzQZT70UJe3uuQy0AT2DaVJDhPyHYkrQFHUWqRRYJ"}'
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
