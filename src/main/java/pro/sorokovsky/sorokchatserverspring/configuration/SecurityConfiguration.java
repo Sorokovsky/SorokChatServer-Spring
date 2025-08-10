@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionAuthenticationStrategy(jwtSessionStrategy)
                 )
+                .cors(AbstractHttpConfigurer::disable)
                 .authenticationProvider(preAuthenticatedAuthenticationProvider);
         http.apply(jwtConfigurer);
         return http.build();

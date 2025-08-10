@@ -19,14 +19,19 @@ public class JwtConverter implements AuthenticationConverter {
 
     @Override
     public Authentication convert(HttpServletRequest request) {
-        final var stringAccessToken = accessTokenStorage.get(request).orElse(null);
-        if (stringAccessToken == null) {
-            LOGGER.info("Access token not stored");
+        try {
+            final var stringAccessToken = accessTokenStorage.get(request).orElse(null);
+            if (stringAccessToken == null) {
+                LOGGER.info("Access token not stored");
+                return null;
+            } else {
+                final var accessToken = accessTokenDeserializer.apply(stringAccessToken);
+                LOGGER.info("Access token: {}", accessToken);
+                return new PreAuthenticatedAuthenticationToken(accessToken, stringAccessToken);
+            }
+        } catch (Exception exception) {
+            LOGGER.error(exception.getMessage(), exception);
             return null;
-        } else {
-            final var accessToken = accessTokenDeserializer.apply(stringAccessToken);
-            LOGGER.info("Access token: {}", accessToken);
-            return new PreAuthenticatedAuthenticationToken(accessToken, stringAccessToken);
         }
     }
 }
