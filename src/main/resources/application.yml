@@ -12,3 +12,6 @@ spring:
 tokens:
   signing-key: '{"kty": "oct", "k": "UyPYbEOm8BVKMfndHCKPXNEkzQZT70UJe3uuQy0AT2DaVJDhPyHYkrQFHUWqRRYJ"}'
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
+springdoc:
+  api-docs:
+    path: openapi.yml
