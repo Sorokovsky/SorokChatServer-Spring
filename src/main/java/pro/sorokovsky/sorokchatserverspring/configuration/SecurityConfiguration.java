@@ -11,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import pro.sorokovsky.sorokchatserverspring.configurer.JwtConfigurer;
-import pro.sorokovsky.sorokchatserverspring.constants.SecurityConstants;
 import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
 import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
@@ -32,8 +31,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
-                        .requestMatchers("/authentication/get-me").hasAuthority(SecurityConstants.ACCESS_TOKEN.name())
-                        .requestMatchers("/authentication/logout").hasAuthority(SecurityConstants.LOGOUT.name())
+                        .requestMatchers("/authentication/get-me", "/authentication/logout").authenticated()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
