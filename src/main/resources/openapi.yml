@@ -125,7 +125,7 @@ paths:
                 format: uri
                 example: /authentication/get-me
             Authorization:
-              description: Токен доступу
+              description: Токен доступу.
               schema:
                 type: string
                 example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
@@ -159,7 +159,7 @@ paths:
           description: Користувача успісно авторизовано.
           headers:
             Authorization:
-              description: Токен доступу
+              description: Токен доступу.
               schema:
                 type: string
                 example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
