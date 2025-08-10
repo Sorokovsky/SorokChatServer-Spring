@@ -14,4 +14,10 @@ tokens:
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
 springdoc:
   api-docs:
-    path: openapi.yml
+    enabled: false # Вимкнено генерацію, бо використовуємо статичний файл
+  swagger-ui:
+    enabled: true
+    url: /static/openapi.yml # Шлях до вашого файлу специфікації
+    path: /swagger-ui.html # Стандартний шлях до UI
+    tags-sorter: alpha # Опціонально: сортування тегів
+    operations-sorter: alpha # Опціонально: сортування операцій

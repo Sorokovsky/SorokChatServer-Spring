@@ -32,7 +32,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session

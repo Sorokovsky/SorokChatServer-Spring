@@ -153,7 +153,10 @@ paths:
       tags:
         - Authentication Controller
       requestBody:
-        $ref: '#/components/schemas/LoginPayload'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginPayload'
       responses:
         "200":
           description: Користувача успісно авторизовано.
@@ -190,16 +193,18 @@ paths:
       parameters:
         - in: header
           name: Authorization
+          required: true
           schema:
             type: string
-            required: true
             description: Токет доступу.
             example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
         - in: cookie
           name: __Host-4V5CcKvkhqt2pPYqDVhjpFFyswj5dqpG
           description: Токен оновлення
           required: false
-          example: eyJraWQiOiI4YzM4MDViMS1mZWU2LTQ4NmEtYmZlNi05M2QzYWU3YzQ2ZGYiLCJlbmMiOiJBMTkyR0NNIiwiYWxnIjoiZGlyIn0..aQR0XLwALU5Ek-8e.X85s6X6caFvzYQWirARGyoi8TkQPqlSIlLmQlM0HgoIVL7HW9e7QLsLjTBOZ5Oa5wKqh2acdc04b66vTInXzObh8iw0x3tXwmYXUAEi0eSTygH6SUvcRGOjQ_53xr9K_bkn-1rIPyfeVej1A.RG3-TAkpHwBCYMUfwuETsQ; Max-Age=604799; Expires=Sun, 17 Aug 2025 16:42:10 GMT; Path=/; Secure; HttpOnly
+          schema:
+            type: string
+            example: eyJraWQiOiI4YzM4MDViMS1mZWU2LTQ4NmEtYmZlNi05M2QzYWU3YzQ2ZGYiLCJlbmMiOiJBMTkyR0NNIiwiYWxnIjoiZGlyIn0..aQR0XLwALU5Ek-8e.X85s6X6caFvzYQWirARGyoi8TkQPqlSIlLmQlM0HgoIVL7HW9e7QLsLjTBOZ5Oa5wKqh2acdc04b66vTInXzObh8iw0x3tXwmYXUAEi0eSTygH6SUvcRGOjQ_53xr9K_bkn-1rIPyfeVej1A.RG3-TAkpHwBCYMUfwuETsQ; Max-Age=604799; Expires=Sun, 17 Aug 2025 16:42:10 GMT; Path=/; Secure; HttpOnly
       responses:
         "200":
           description: Успішно.
