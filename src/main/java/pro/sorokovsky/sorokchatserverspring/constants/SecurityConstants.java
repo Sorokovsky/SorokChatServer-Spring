@@ -4,4 +4,5 @@ public enum SecurityConstants {
     GRANT_,
     REFRESH_TOKEN,
     ACCESS_TOKEN,
+    LOGOUT
 }

@@ -24,10 +24,11 @@ public class UserModel implements UserDetails {
     private String firstName;
     private String lastName;
     private String middleName;
+    private List<GrantedAuthority> authorities = List.of();
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+    public Collection<GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override

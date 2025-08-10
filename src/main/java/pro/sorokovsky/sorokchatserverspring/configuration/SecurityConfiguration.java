@@ -9,9 +9,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import pro.sorokovsky.sorokchatserverspring.configurer.JwtConfigurer;
+import pro.sorokovsky.sorokchatserverspring.constants.SecurityConstants;
+import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
 import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.serializer.TokenSerializer;
+import pro.sorokovsky.sorokchatserverspring.service.JwtAuthenticationUserDetailsService;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
 
@@ -20,19 +25,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtSessionStrategy jwtSessionStrategy
+            JwtSessionStrategy jwtSessionStrategy,
+            JwtConfigurer jwtConfigurer,
+            PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider
     ) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
-                        .requestMatchers("/authentication/get-me", "/authentication/logout").authenticated()
+                        .requestMatchers("/authentication/get-me").hasAuthority(SecurityConstants.ACCESS_TOKEN.name())
+                        .requestMatchers("/authentication/logout").hasAuthority(SecurityConstants.LOGOUT.name())
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionAuthenticationStrategy(jwtSessionStrategy)
-                );
+                )
+                .authenticationProvider(preAuthenticatedAuthenticationProvider);
+        http.apply(jwtConfigurer);
         return http.build();
     }
 
@@ -63,5 +73,28 @@ public class SecurityConfiguration {
                 .refreshTokenSerializer(refreshTokenSerializer)
                 .refreshTokenStorage(refreshTokenStorage)
                 .build();
+    }
+
+    @Bean
+    JwtConfigurer jwtConfigurer(
+            @Qualifier("jws-deserializer")
+            TokenDeserializer accessTokenDeserializer,
+            @Qualifier("bearer-storage")
+            TokenStorage accessTokenStorage
+    ) {
+        return JwtConfigurer
+                .builder()
+                .accessTokenDeserializer(accessTokenDeserializer)
+                .accessTokenStorage(accessTokenStorage)
+                .build();
+    }
+
+    @Bean
+    public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider(
+            JwtAuthenticationUserDetailsService jwtAuthenticationUserDetailsService
+    ) {
+        final var provider = new PreAuthenticatedAuthenticationProvider();
+        provider.setPreAuthenticatedUserDetailsService(jwtAuthenticationUserDetailsService);
+        return provider;
     }
 }
