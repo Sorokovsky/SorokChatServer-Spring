@@ -9,15 +9,21 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
 tokens:
   signing-key: '{"kty": "oct", "k": "UyPYbEOm8BVKMfndHCKPXNEkzQZT70UJe3uuQy0AT2DaVJDhPyHYkrQFHUWqRRYJ"}'
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
 springdoc:
-  api-docs:
-    enabled: false # Вимкнено генерацію, бо використовуємо статичний файл
+  cache:
+    disabled: true
   swagger-ui:
-    enabled: true
-    url: /static/openapi.yml # Шлях до вашого файлу специфікації
-    path: /swagger-ui.html # Стандартний шлях до UI
-    tags-sorter: alpha # Опціонально: сортування тегів
-    operations-sorter: alpha # Опціонально: сортування операцій
+    path: /swagger-ui.html
+  api-docs:
+    path: /openapi.yml
+logging:
+  level:
+    springdoc: debug

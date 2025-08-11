@@ -39,8 +39,6 @@ components:
           example: Іванович
     ErrorPayload:
       type: object
-      additionalProperties:
-        type: string
       example:
         email: Invalid format of string for email.
         password: Size of string must be from 6 to 1000000000 characters.
@@ -68,13 +66,11 @@ components:
           default: 1
         createdAt:
           type: string
-          format: 'date-time'
-          default: 2025-08-09T18:12:23.230+00:00
+          default: "2025-08-09T18:12:23Z"
           description: Дата створення користувача.
         updatedAt:
           type: string
-          format: 'date-time'
-          default: 2025-08-09T18:12:23.230+00:00
+          default: "2025-08-09T18:12:23Z"
           description: Дата оновлення користувача.
         email:
           type: string
@@ -189,6 +185,8 @@ paths:
           description: Невідома помилка.
   /authentication/get-me:
     get:
+      tags:
+        - Authentication Controller
       description: Отримати авторизованого користувача.
       parameters:
         - in: header
@@ -216,3 +214,12 @@ paths:
           description: Невідома помилка.
         "401":
           description: Неавторизовано.
+  /authentication/logout:
+    delete:
+      tags:
+        - Authentication Controller
+      summary: Вийти з акаунту.
+      operationId: logout
+      responses:
+        "204":
+          description: Успішно.
