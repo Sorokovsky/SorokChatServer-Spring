@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +27,7 @@ import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
 import java.util.List;
 
 @Configuration
+@EnableWebSecurity(debug = true)
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -37,7 +40,7 @@ public class SecurityConfiguration {
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
-                        .requestMatchers("/swagger-ui/**", "/openapi.yml/**").permitAll()
+                        .requestMatchers("/", "/swagger-ui/**", "/openapi.yml/**").permitAll()
                         .requestMatchers("/authentication/**").authenticated()
                         .anyRequest().authenticated()
                 )
@@ -47,6 +50,7 @@ public class SecurityConfiguration {
                         .sessionAuthenticationStrategy(jwtSessionStrategy)
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .requestCache(RequestCacheConfigurer::disable)
                 .authenticationProvider(preAuthenticatedAuthenticationProvider);
         http.apply(jwtConfigurer);
         return http.build();
@@ -55,9 +59,10 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final var configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         final var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
