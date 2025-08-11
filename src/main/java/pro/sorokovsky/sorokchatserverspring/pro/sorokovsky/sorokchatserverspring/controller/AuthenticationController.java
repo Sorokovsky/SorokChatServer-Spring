@@ -3,12 +3,14 @@ package pro.sorokovsky.sorokchatserverspring.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pro.sorokovsky.sorokchatserverspring.contract.GetUserPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.LoginPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.NewUserPayload;
 import pro.sorokovsky.sorokchatserverspring.mapper.UserMapper;
+import pro.sorokovsky.sorokchatserverspring.model.UserModel;
 import pro.sorokovsky.sorokchatserverspring.service.AuthenticationService;
 
 @RestController
@@ -19,13 +21,8 @@ public class AuthenticationController {
     private final UserMapper mapper;
 
     @GetMapping("/get-me")
-    public ResponseEntity<?> getMe() {
-        return ResponseEntity.ok("Hello World");
-        /*if(user == null) return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer")
-                .build();
-        return ResponseEntity.ok(mapper.toGet(user));*/
+    public ResponseEntity<GetUserPayload> getMe(@AuthenticationPrincipal UserModel user) {
+        return ResponseEntity.ok(mapper.toGet(user));
     }
 
     @PostMapping("/register")
