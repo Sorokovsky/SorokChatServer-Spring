@@ -8,6 +8,12 @@ info:
 servers:
   - url: http://localhost:8080
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT токен доступу у форматі Bearer <token>
   schemas:
     NewUserPayload:
       type: object
@@ -94,6 +100,8 @@ components:
           type: string
           description: По батькові.
           default: Іванович
+security:
+  - bearerAuth: [ ]
 paths:
   /authentication/register:
     post:
@@ -120,16 +128,19 @@ paths:
                 type: string
                 format: uri
                 example: /authentication/get-me
+              required: true
             Authorization:
               description: Токен доступу.
               schema:
                 type: string
                 example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              required: true
             Set-Cookie:
               description: Кука для токена відновлення.
               schema:
                 type: string
                 example: __Host-4V5CcKvkhqt2pPYqDVhjpFFyswj5dqpG=eyJraWQiOiI4YzM4MDViMS1mZWU2LTQ4NmEtYmZlNi05M2QzYWU3YzQ2ZGYiLCJlbmMiOiJBMTkyR0NNIiwiYWxnIjoiZGlyIn0..aQR0XLwALU5Ek-8e.X85s6X6caFvzYQWirARGyoi8TkQPqlSIlLmQlM0HgoIVL7HW9e7QLsLjTBOZ5Oa5wKqh2acdc04b66vTInXzObh8iw0x3tXwmYXUAEi0eSTygH6SUvcRGOjQ_53xr9K_bkn-1rIPyfeVej1A.RG3-TAkpHwBCYMUfwuETsQ; Max-Age=604799; Expires=Sun, 17 Aug 2025 16:42:10 GMT; Path=/; Secure; HttpOnly
+              required: true
         "400":
           description: Користувач помилився в наданні інформації.
           content:
@@ -162,11 +173,13 @@ paths:
               schema:
                 type: string
                 example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+              required: true
             Set-Cookie:
               description: Кука для токена відновлення.
               schema:
                 type: string
                 example: __Host-4V5CcKvkhqt2pPYqDVhjpFFyswj5dqpG=eyJraWQiOiI4YzM4MDViMS1mZWU2LTQ4NmEtYmZlNi05M2QzYWU3YzQ2ZGYiLCJlbmMiOiJBMTkyR0NNIiwiYWxnIjoiZGlyIn0..aQR0XLwALU5Ek-8e.X85s6X6caFvzYQWirARGyoi8TkQPqlSIlLmQlM0HgoIVL7HW9e7QLsLjTBOZ5Oa5wKqh2acdc04b66vTInXzObh8iw0x3tXwmYXUAEi0eSTygH6SUvcRGOjQ_53xr9K_bkn-1rIPyfeVej1A.RG3-TAkpHwBCYMUfwuETsQ; Max-Age=604799; Expires=Sun, 17 Aug 2025 16:42:10 GMT; Path=/; Secure; HttpOnly
+              required: true
           content:
             application/json:
               schema:
@@ -187,22 +200,8 @@ paths:
     get:
       tags:
         - Authentication Controller
+      summary: Отримання авторизованого користувача.
       description: Отримати авторизованого користувача.
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
-            description: Токет доступу.
-            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-        - in: cookie
-          name: __Host-4V5CcKvkhqt2pPYqDVhjpFFyswj5dqpG
-          description: Токен оновлення
-          required: false
-          schema:
-            type: string
-            example: eyJraWQiOiI4YzM4MDViMS1mZWU2LTQ4NmEtYmZlNi05M2QzYWU3YzQ2ZGYiLCJlbmMiOiJBMTkyR0NNIiwiYWxnIjoiZGlyIn0..aQR0XLwALU5Ek-8e.X85s6X6caFvzYQWirARGyoi8TkQPqlSIlLmQlM0HgoIVL7HW9e7QLsLjTBOZ5Oa5wKqh2acdc04b66vTInXzObh8iw0x3tXwmYXUAEi0eSTygH6SUvcRGOjQ_53xr9K_bkn-1rIPyfeVej1A.RG3-TAkpHwBCYMUfwuETsQ; Max-Age=604799; Expires=Sun, 17 Aug 2025 16:42:10 GMT; Path=/; Secure; HttpOnly
       responses:
         "200":
           description: Успішно.
@@ -214,6 +213,12 @@ paths:
           description: Невідома помилка.
         "401":
           description: Неавторизовано.
+          headers:
+            WWW-Authenticate:
+              required: true
+              description: Спосіб аутентифікаці.
+              schema:
+                type: string
   /authentication/logout:
     delete:
       tags:
@@ -223,3 +228,11 @@ paths:
       responses:
         "204":
           description: Успішно.
+        "401":
+          description: Неавторизовано.
+          headers:
+            WWW-Authenticate:
+              required: true
+              description: Спосіб аутентифікаці.
+              schema:
+                type: string
