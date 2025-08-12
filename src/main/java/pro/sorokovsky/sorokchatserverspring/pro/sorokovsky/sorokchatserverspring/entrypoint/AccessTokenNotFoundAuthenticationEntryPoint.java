@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import pro.sorokovsky.sorokchatserverspring.constants.AuthenticationVariants;
 
 @Component
 public class AccessTokenNotFoundAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -14,6 +15,6 @@ public class AccessTokenNotFoundAuthenticationEntryPoint implements Authenticati
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, AuthenticationVariants.Bearer.name());
     }
 }

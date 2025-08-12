@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import pro.sorokovsky.sorokchatserverspring.constants.AuthenticationVariants;
 import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
 import pro.sorokovsky.sorokchatserverspring.exception.InvalidTokenException;
 import pro.sorokovsky.sorokchatserverspring.exception.TokenNotParsedException;
@@ -58,7 +59,7 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
             }
         } catch (TokenNotParsedException | InvalidTokenException exception) {
             LOGGER.info("Refresh token parsing error: {}", exception.getMessage());
-            response.addHeader(HttpHeaders.WWW_AUTHENTICATE, "Cookie");
+            response.addHeader(HttpHeaders.WWW_AUTHENTICATE, AuthenticationVariants.Cookie.name());
         }
         filterChain.doFilter(request, response);
     }
