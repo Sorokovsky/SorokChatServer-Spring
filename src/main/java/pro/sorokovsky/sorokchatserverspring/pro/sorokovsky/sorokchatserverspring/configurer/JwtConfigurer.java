@@ -16,7 +16,7 @@ import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 public class JwtConfigurer implements SecurityConfigurer<DefaultSecurityFilterChain, HttpSecurity> {
     private final TokenStorage accessTokenStorage;
     private final TokenDeserializer accessTokenDeserializer;
-    private AuthenticationEntryPoint failedAuthenticationEntryPoint;
+    private final AuthenticationEntryPoint failedAuthenticationEntryPoint;
 
     @Override
     public void init(HttpSecurity builder) {

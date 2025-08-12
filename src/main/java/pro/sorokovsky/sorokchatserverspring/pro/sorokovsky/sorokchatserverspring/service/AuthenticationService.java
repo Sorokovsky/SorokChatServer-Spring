@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 import pro.sorokovsky.sorokchatserverspring.contract.LoginPayload;
@@ -13,12 +12,13 @@ import pro.sorokovsky.sorokchatserverspring.contract.NewUserPayload;
 import pro.sorokovsky.sorokchatserverspring.exception.InvalidCredentialsException;
 import pro.sorokovsky.sorokchatserverspring.model.UserModel;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
+import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
 
 @Service
 @RequestScope
 public class AuthenticationService {
     private final UsersService usersService;
-    private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+    private final JwtSessionStrategy sessionAuthenticationStrategy;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final PasswordEncoder passwordEncoder;
@@ -27,7 +27,7 @@ public class AuthenticationService {
 
     public AuthenticationService(
             UsersService usersService,
-            SessionAuthenticationStrategy sessionAuthenticationStrategy,
+            JwtSessionStrategy sessionAuthenticationStrategy,
             HttpServletRequest request,
             HttpServletResponse response,
             PasswordEncoder passwordEncoder,

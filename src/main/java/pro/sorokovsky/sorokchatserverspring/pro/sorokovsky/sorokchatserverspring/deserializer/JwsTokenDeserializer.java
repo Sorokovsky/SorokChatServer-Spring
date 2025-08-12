@@ -21,6 +21,7 @@ public class JwsTokenDeserializer extends JwtTokenDeserializer {
     @Override
     public Token apply(String string) {
         try {
+            if (string == null) throw new TokenNotParsedException("Token is null");
             final var signed = SignedJWT.parse(string);
             signed.verify(verifier);
             return extractFromClaims(signed.getJWTClaimsSet());

@@ -21,6 +21,7 @@ public class JweTokenDeserializer extends JwtTokenDeserializer {
     @Override
     public Token apply(String string) {
         try {
+            if (string == null) throw new TokenNotParsedException("Token is null");
             final var encrypted = EncryptedJWT.parse(string);
             encrypted.decrypt(decrypter);
             return extractFromClaims(encrypted.getJWTClaimsSet());
