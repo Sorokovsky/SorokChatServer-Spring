@@ -14,6 +14,6 @@ public class AccessTokenNotFoundAuthenticationEntryPoint implements Authenticati
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
+        response.addHeader(HttpHeaders.WWW_AUTHENTICATE, "Bearer");
     }
 }

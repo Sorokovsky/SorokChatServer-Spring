@@ -19,6 +19,7 @@ import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.serializer.TokenSerializer;
 import pro.sorokovsky.sorokchatserverspring.service.JwtAuthenticationUserDetailsService;
+import pro.sorokovsky.sorokchatserverspring.service.UsersService;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
 
@@ -27,7 +28,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            JwtSessionStrategy jwtSessionStrategy,
             JwtConfigurer jwtConfigurer,
             AuthenticationProvider authenticationProvider,
             RefreshTokensConfigurer refreshTokensConfigurer
@@ -109,7 +109,8 @@ public class SecurityConfiguration {
             @Qualifier("jwe-serializer")
             TokenSerializer refreshTokenSerializer,
             @Qualifier("cookie-storage")
-            TokenStorage refreshTokenStorage
+            TokenStorage refreshTokenStorage,
+            UsersService usersService
     ) {
         return RefreshTokensConfigurer
                 .builder()
@@ -120,6 +121,7 @@ public class SecurityConfiguration {
                 .refreshTokenFactory(refreshTokenFactory)
                 .refreshTokenSerializer(refreshTokenSerializer)
                 .refreshTokenStorage(refreshTokenStorage)
+                .usersService(usersService)
                 .build();
     }
 

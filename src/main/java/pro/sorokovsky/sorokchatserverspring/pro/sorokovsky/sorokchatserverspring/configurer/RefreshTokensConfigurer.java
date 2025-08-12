@@ -11,6 +11,7 @@ import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.filter.RefreshTokensFilter;
 import pro.sorokovsky.sorokchatserverspring.serializer.TokenSerializer;
+import pro.sorokovsky.sorokchatserverspring.service.UsersService;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 
 @Builder
@@ -23,6 +24,7 @@ public class RefreshTokensConfigurer implements SecurityConfigurer<DefaultSecuri
     private final TokenSerializer accessTokenSerializer;
     private final TokenSerializer refreshTokenSerializer;
     private final TokenDeserializer refreshTokenDeserializer;
+    private final UsersService usersService;
 
     @Override
     public void init(HttpSecurity builder) {
@@ -38,7 +40,8 @@ public class RefreshTokensConfigurer implements SecurityConfigurer<DefaultSecuri
                 refreshTokenFactory,
                 accessTokenSerializer,
                 refreshTokenSerializer,
-                refreshTokenDeserializer
+                refreshTokenDeserializer,
+                usersService
         );
 
         builder.addFilterAfter(filter, CsrfFilter.class);
