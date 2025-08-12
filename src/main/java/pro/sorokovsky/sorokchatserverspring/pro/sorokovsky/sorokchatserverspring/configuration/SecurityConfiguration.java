@@ -3,28 +3,24 @@ package pro.sorokovsky.sorokchatserverspring.configuration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pro.sorokovsky.sorokchatserverspring.configurer.JwtConfigurer;
 import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
+import pro.sorokovsky.sorokchatserverspring.entrypoint.AccessTokenNotFoundAuthenticationEntryPoint;
 import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.serializer.TokenSerializer;
 import pro.sorokovsky.sorokchatserverspring.service.JwtAuthenticationUserDetailsService;
 import pro.sorokovsky.sorokchatserverspring.storage.TokenStorage;
 import pro.sorokovsky.sorokchatserverspring.strategy.JwtSessionStrategy;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -34,14 +30,13 @@ public class SecurityConfiguration {
             HttpSecurity http,
             JwtSessionStrategy jwtSessionStrategy,
             JwtConfigurer jwtConfigurer,
-            PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider
+            AuthenticationProvider authenticationProvider
     ) throws Exception {
         http
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
-                        .requestMatchers("/", "/swagger-ui/**", "/openapi.yml/**").permitAll()
-                        .requestMatchers("/authentication/**").authenticated()
+                        .requestMatchers("/swagger-ui/**", "/openapi.yml/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -49,23 +44,12 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.NEVER)
                         .sessionAuthenticationStrategy(jwtSessionStrategy)
                 )
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .requestCache(RequestCacheConfigurer::disable)
-                .authenticationProvider(preAuthenticatedAuthenticationProvider);
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new AccessTokenNotFoundAuthenticationEntryPoint())
+                )
+                .authenticationProvider(authenticationProvider);
         http.apply(jwtConfigurer);
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        final var configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-        final var source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
@@ -108,11 +92,12 @@ public class SecurityConfiguration {
                 .builder()
                 .accessTokenDeserializer(accessTokenDeserializer)
                 .accessTokenStorage(accessTokenStorage)
+                .failedAuthenticationEntryPoint(new AccessTokenNotFoundAuthenticationEntryPoint())
                 .build();
     }
 
     @Bean
-    public PreAuthenticatedAuthenticationProvider preAuthenticatedAuthenticationProvider(
+    public AuthenticationProvider preAuthenticatedAuthenticationProvider(
             JwtAuthenticationUserDetailsService jwtAuthenticationUserDetailsService
     ) {
         final var provider = new PreAuthenticatedAuthenticationProvider();
