@@ -1,11 +1,11 @@
 package pro.sorokovsky.sorokchatserverspring.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sorokovsky.sorokchatserverspring.contract.NewUserPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.UpdateUserPayload;
 import pro.sorokovsky.sorokchatserverspring.exception.UserAlreadyExistsException;
@@ -22,10 +22,12 @@ public class UsersService implements UserDetailsService {
     private final UsersRepository repository;
     private final UserMapper mapper;
 
+    @Transactional(readOnly = true)
     public Optional<UserModel> getById(Long id) {
         return repository.findById(id).map(mapper::toModel);
     }
 
+    @Transactional(readOnly = true)
     public Optional<UserModel> getByEmail(String email) {
         return repository.findByEmail(email).map(mapper::toModel);
     }
