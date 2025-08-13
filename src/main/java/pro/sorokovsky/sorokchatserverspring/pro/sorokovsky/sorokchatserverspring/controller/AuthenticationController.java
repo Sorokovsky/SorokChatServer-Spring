@@ -60,6 +60,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(mapper.toGet(user));
     }
 
+    @Operation(summary = "Вихід з акаунту")
+    @ApiUnauthorizedResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiNoContentResponse
     @DeleteMapping("logout")
     public ResponseEntity<Void> logout() {
         service.logout();
