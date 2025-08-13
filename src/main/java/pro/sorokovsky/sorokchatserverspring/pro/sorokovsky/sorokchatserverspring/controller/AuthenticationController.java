@@ -25,7 +25,7 @@ public class AuthenticationController {
     private final UserMapper mapper;
 
     @GetMapping("get-me")
-    @Operation(summary = "Отримати авторизованого користувача")
+    @Operation(summary = "Отримання авторизованого користувача")
     @ApiOkWithUserResponse
     @ApiUnauthorizedResponse
     @ApiBadRequestResponse

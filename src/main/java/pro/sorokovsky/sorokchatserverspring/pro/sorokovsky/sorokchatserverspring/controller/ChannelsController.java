@@ -29,7 +29,7 @@ public class ChannelsController {
     private final ChannelMapper mapper;
 
     @GetMapping("by-user/{userId:\\d++}")
-    @Operation(summary = "Отримати чати за користувачем")
+    @Operation(summary = "Отримання чатів за користувачем")
     @ApiUnauthorizedResponse
     @ApiInternalServerErrorResponse
     @ApiBadRequestResponse
@@ -50,6 +50,11 @@ public class ChannelsController {
     }
 
     @PostMapping
+    @Operation(summary = "Створення чату")
+    @ApiCreatedWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     public ResponseEntity<GetChannelPayload> create(
             @AuthenticationPrincipal UserModel user,
             @Valid @RequestBody NewChannelPayload payload,
@@ -59,7 +64,7 @@ public class ChannelsController {
         return ResponseEntity
                 .created(
                         uriComponentsBuilder
-                                .pathSegment("channels/%d".formatted(created.getId()))
+                                .pathSegment("channels/by-id/%d".formatted(created.getId()))
                                 .build()
                                 .toUri()
                 )
@@ -67,21 +72,41 @@ public class ChannelsController {
     }
 
     @PutMapping("by-id/{id:\\d++}")
+    @Operation(summary = "Оновлення чату")
+    @ApiOkWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     public ResponseEntity<GetChannelPayload> update(@PathVariable("id") long id, @Valid @RequestBody UpdateChannelPayload payload) {
         return ResponseEntity.ok(mapper.toGet(service.update(id, payload)));
     }
 
     @PutMapping("add-user/{id:\\d++}/{userId:\\d++}")
+    @Operation(summary = "Додавання користувача в чат")
+    @ApiOkWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     public ResponseEntity<GetChannelPayload> addUser(@PathVariable("id") long id, @PathVariable("userId") long userId) {
         return ResponseEntity.ok(mapper.toGet(service.addUser(id, userId)));
     }
 
     @PutMapping("remove-user/{id:\\d++}/{userId:\\d++}")
+    @Operation(summary = "Видалення користувача з чату")
+    @ApiOkWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     public ResponseEntity<GetChannelPayload> removeUser(@PathVariable("id") long id, @PathVariable("userId") long userId) {
         return ResponseEntity.ok(mapper.toGet(service.removeUser(id, userId)));
     }
 
     @DeleteMapping("by-id/{id:\\d++}")
+    @Operation(summary = "Видалення чату")
+    @ApiOkWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     public ResponseEntity<GetChannelPayload> delete(@PathVariable("id") long id) {
         return ResponseEntity.ok(mapper.toGet(service.delete(id)));
     }
