@@ -1,11 +1,14 @@
 package pro.sorokovsky.sorokchatserverspring.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import pro.sorokovsky.sorokchatserverspring.anotation.response.*;
 import pro.sorokovsky.sorokchatserverspring.contract.GetChannelPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.NewChannelPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.UpdateChannelPayload;
@@ -20,15 +23,26 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("channels")
 @RequiredArgsConstructor
+@Tag(name = "Чати")
 public class ChannelsController {
     private final ChannelsService service;
     private final ChannelMapper mapper;
 
     @GetMapping("by-user/{userId:\\d++}")
+    @Operation(summary = "Отримати чати за користувачем")
+    @ApiUnauthorizedResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiOkWithChannelListResponse
     public ResponseEntity<List<GetChannelPayload>> getChannels(@PathVariable("userId") long userId) {
         return ResponseEntity.ok(service.getByUserId(userId).stream().map(mapper::toGet).collect(Collectors.toList()));
     }
 
+    @Operation(summary = "Отримання чату за унікальним ідентифікатором")
+    @ApiOkWithChannelResponse
+    @ApiInternalServerErrorResponse
+    @ApiBadRequestResponse
+    @ApiUnauthorizedResponse
     @GetMapping("by-id/{id:\\d++}")
     public ResponseEntity<GetChannelPayload> getChannel(@PathVariable("id") long id) {
         final var channel = service.getById(id).orElseThrow(UserNotFoundException::new);
