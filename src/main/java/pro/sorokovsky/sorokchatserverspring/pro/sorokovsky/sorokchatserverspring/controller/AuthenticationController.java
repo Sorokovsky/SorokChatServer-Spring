@@ -14,18 +14,18 @@ import pro.sorokovsky.sorokchatserverspring.model.UserModel;
 import pro.sorokovsky.sorokchatserverspring.service.AuthenticationService;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping("authentication")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService service;
     private final UserMapper mapper;
 
-    @GetMapping("/get-me")
+    @GetMapping("get-me")
     public ResponseEntity<GetUserPayload> getMe(@AuthenticationPrincipal UserModel user) {
         return ResponseEntity.ok(mapper.toGet(user));
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<GetUserPayload> register(
             @Valid @RequestBody NewUserPayload payload,
             UriComponentsBuilder uriBuilder
@@ -36,13 +36,13 @@ public class AuthenticationController {
                 .body(mapper.toGet(created));
     }
 
-    @PutMapping("/login")
+    @PutMapping("login")
     public ResponseEntity<GetUserPayload> login(@Valid @RequestBody LoginPayload payload) {
         final var user = service.login(payload);
         return ResponseEntity.ok(mapper.toGet(user));
     }
 
-    @DeleteMapping("/logout")
+    @DeleteMapping("logout")
     public ResponseEntity<Void> logout() {
         service.logout();
         return ResponseEntity.noContent().build();

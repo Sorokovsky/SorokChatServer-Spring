@@ -2,6 +2,7 @@ package pro.sorokovsky.sorokchatserverspring.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pro.sorokovsky.sorokchatserverspring.contract.GetChannelPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.NewChannelPayload;
 import pro.sorokovsky.sorokchatserverspring.contract.UpdateChannelPayload;
 import pro.sorokovsky.sorokchatserverspring.entity.ChannelEntity;
@@ -42,6 +43,17 @@ public class ChannelMapper {
                 .users(List.of())
                 .messages(List.of())
                 .build();
+    }
+
+    public GetChannelPayload toGet(ChannelModel model) {
+        return new GetChannelPayload(
+                model.getId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getName(),
+                model.getDescription(),
+                model.getUsers().stream().map(userMapper::toGet).collect(Collectors.toList())
+        );
     }
 
     public ChannelModel merge(UpdateChannelPayload newState, ChannelModel oldState) {

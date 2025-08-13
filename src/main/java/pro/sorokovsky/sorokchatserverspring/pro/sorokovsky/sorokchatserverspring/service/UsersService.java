@@ -52,6 +52,7 @@ public class UsersService implements UserDetailsService {
         return candidate;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getByEmail(username).orElseThrow(UserNotFoundException::new);
