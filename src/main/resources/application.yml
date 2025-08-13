@@ -17,14 +17,6 @@ spring:
 tokens:
   signing-key: '{"kty": "oct", "k": "UyPYbEOm8BVKMfndHCKPXNEkzQZT70UJe3uuQy0AT2DaVJDhPyHYkrQFHUWqRRYJ"}'
   encryption-key: '{"kty": "oct", "k": "4SheNw9BSjCHxXFBqubLTTyEmjCCj4F7"}'
-springdoc:
-  cache:
-    disabled: true
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true
-  api-docs:
-    path: /openapi.yml
 logging:
   level:
     springdoc: debug

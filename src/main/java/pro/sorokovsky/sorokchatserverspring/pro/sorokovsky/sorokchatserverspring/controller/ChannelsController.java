@@ -24,12 +24,12 @@ public class ChannelsController {
     private final ChannelsService service;
     private final ChannelMapper mapper;
 
-    @GetMapping("by-user/{userId:\\d+}")
+    @GetMapping("by-user/{userId:\\d++}")
     public ResponseEntity<List<GetChannelPayload>> getChannels(@PathVariable("userId") long userId) {
         return ResponseEntity.ok(service.getByUserId(userId).stream().map(mapper::toGet).collect(Collectors.toList()));
     }
 
-    @GetMapping("by-id/{id:\\d+}")
+    @GetMapping("by-id/{id:\\d++}")
     public ResponseEntity<GetChannelPayload> getChannel(@PathVariable("id") long id) {
         final var channel = service.getById(id).orElseThrow(UserNotFoundException::new);
         return ResponseEntity.ok(mapper.toGet(channel));

@@ -1,7 +1,14 @@
 package pro.sorokovsky.sorokchatserverspring.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +20,50 @@ import pro.sorokovsky.sorokchatserverspring.mapper.UserMapper;
 import pro.sorokovsky.sorokchatserverspring.model.UserModel;
 import pro.sorokovsky.sorokchatserverspring.service.AuthenticationService;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("authentication")
 @RequiredArgsConstructor
+@Tag(name = "Автентифікація")
 public class AuthenticationController {
     private final AuthenticationService service;
     private final UserMapper mapper;
 
     @GetMapping("get-me")
+    @Operation(summary = "Отримати авторизованого користувача")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            description = "Успішно",
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = GetUserPayload.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Неавторизовано",
+                            responseCode = "401"
+                    ),
+                    @ApiResponse(
+                            description = "Не правильні данні",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = HashMap.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Невідома помилка",
+                            responseCode = "500",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = HashMap.class)
+                            )
+                    )
+            }
+    )
     public ResponseEntity<GetUserPayload> getMe(@AuthenticationPrincipal UserModel user) {
         return ResponseEntity.ok(mapper.toGet(user));
     }
