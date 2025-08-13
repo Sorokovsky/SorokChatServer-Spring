@@ -1,6 +1,7 @@
 package pro.sorokovsky.sorokchatserverspring.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -69,6 +71,53 @@ public class AuthenticationController {
     }
 
     @PostMapping("register")
+    @Operation(summary = "Реєстрація користувача")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = GetUserPayload.class)
+                            ),
+                            responseCode = "201",
+                            description = "Створено",
+                            headers = {
+                                    @Header(
+                                            name = HttpHeaders.LOCATION,
+                                            required = true,
+                                            description = "Посилання на авторизованого користувача",
+                                            example = "/authentication/get-me"
+                                    ),
+                                    @Header(
+                                            name = HttpHeaders.AUTHORIZATION,
+                                            required = true,
+                                            description = "Токен доступу",
+                                            example = "Bearer <token>"
+                                    ),
+                            }
+                    ),
+                    @ApiResponse(
+                            description = "Не правильні данні",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = HashMap.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Невідома помилка",
+                            responseCode = "500",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = HashMap.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "В доступі відмовлено",
+                            responseCode = "403"
+                    )
+            }
+    )
     public ResponseEntity<GetUserPayload> register(
             @Valid @RequestBody NewUserPayload payload,
             UriComponentsBuilder uriBuilder
