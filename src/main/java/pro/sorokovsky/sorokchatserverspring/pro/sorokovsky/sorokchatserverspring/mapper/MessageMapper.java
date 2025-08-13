@@ -20,4 +20,15 @@ public class MessageMapper {
                 .text(entity.getText())
                 .build();
     }
+
+    public MessageEntity toEntity(MessageModel model) {
+        return MessageEntity
+                .builder()
+                .id(model.getId())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .author(userMapper.toEntity(model.getAuthor()))
+                .text(model.getText())
+                .build();
+    }
 }

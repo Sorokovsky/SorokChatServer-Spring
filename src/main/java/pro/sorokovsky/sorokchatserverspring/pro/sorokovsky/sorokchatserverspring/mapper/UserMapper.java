@@ -45,6 +45,20 @@ public class UserMapper {
                 .build();
     }
 
+    public UserEntity toEntity(UserModel model) {
+        return UserEntity
+                .builder()
+                .id(model.getId())
+                .email(model.getEmail())
+                .firstName(model.getFirstName())
+                .lastName(model.getLastName())
+                .middleName(model.getMiddleName())
+                .password(model.getPassword())
+                .createdAt(model.getCreatedAt())
+                .updatedAt(model.getUpdatedAt())
+                .build();
+    }
+
     public UserEntity merge(UserModel oldState, UpdateUserPayload newState) {
         return UserEntity
                 .builder()
