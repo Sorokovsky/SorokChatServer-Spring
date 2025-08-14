@@ -10,4 +10,5 @@ public class ErrorsConstants {
     public static final String USER_ALREADY_EXISTS = "errors.user-already-exists";
     public static final String USER_NOT_FOUND = "errors.user-not-found";
     public static final String CHANNEL_NOT_FOUND = "errors.channel-not-found";
+    public static final String MESSAGE_NOT_FOUND = "errors.message-not-found";
 }

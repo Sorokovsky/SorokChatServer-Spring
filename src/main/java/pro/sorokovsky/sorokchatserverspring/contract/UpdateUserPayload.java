@@ -9,7 +9,7 @@ public record UpdateUserPayload(
         @Email(message = "{" + ErrorsConstants.NOT_EMAIL + "}")
         @Schema(
                 description = "Електронна адреса",
-                defaultValue = "Sorokovskys@urk.net",
+                defaultValue = "Sorokovskys@ukr.net",
                 requiredMode = Schema.RequiredMode.NOT_REQUIRED
         )
         String email,

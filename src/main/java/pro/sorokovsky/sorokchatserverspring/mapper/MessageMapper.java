@@ -2,8 +2,14 @@ package pro.sorokovsky.sorokchatserverspring.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pro.sorokovsky.sorokchatserverspring.contract.NewMessagePayload;
+import pro.sorokovsky.sorokchatserverspring.contract.UpdateMessagePayload;
 import pro.sorokovsky.sorokchatserverspring.entity.MessageEntity;
 import pro.sorokovsky.sorokchatserverspring.model.MessageModel;
+import pro.sorokovsky.sorokchatserverspring.model.UserModel;
+
+import java.time.Instant;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,29 @@ public class MessageMapper {
                 .updatedAt(model.getUpdatedAt())
                 .author(userMapper.toEntity(model.getAuthor()))
                 .text(model.getText())
+                .build();
+    }
+
+    public MessageEntity merge(MessageModel oldState, UpdateMessagePayload newState) {
+        final var text = (newState.text() == null || newState.text().isBlank()) ? oldState.getText() : newState.text();
+        return MessageEntity
+                .builder()
+                .id(oldState.getId())
+                .createdAt(oldState.getCreatedAt())
+                .updatedAt(Date.from(Instant.now()))
+                .author(userMapper.toEntity(oldState.getAuthor()))
+                .text(text)
+                .build();
+    }
+
+    public MessageEntity toEntity(NewMessagePayload payload, UserModel user) {
+        final var now = Date.from(Instant.now());
+        return MessageEntity
+                .builder()
+                .createdAt(now)
+                .updatedAt(now)
+                .author(userMapper.toEntity(user))
+                .text(payload.text())
                 .build();
     }
 }
