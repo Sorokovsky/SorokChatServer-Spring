@@ -1,5 +1,6 @@
 package pro.sorokovsky.sorokchatserverspring.contract;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
@@ -31,10 +32,12 @@ public record GetChannelPayload(
                 example = "Крутий чат"
         )
         String name,
-        @Schema(
-                description = "Опис чату",
-                requiredMode = Schema.RequiredMode.REQUIRED,
-                example = "Опис крутого чату"
+        @ArraySchema(
+                arraySchema = @Schema(
+                        description = "Опис чату",
+                        requiredMode = Schema.RequiredMode.REQUIRED,
+                        example = "Опис крутого чату"
+                )
         )
         String description,
         List<GetUserPayload> users
