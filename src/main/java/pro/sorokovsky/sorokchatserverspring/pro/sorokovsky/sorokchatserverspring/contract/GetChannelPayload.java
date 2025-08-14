@@ -32,14 +32,20 @@ public record GetChannelPayload(
                 example = "Крутий чат"
         )
         String name,
-        @ArraySchema(
-                arraySchema = @Schema(
-                        description = "Опис чату",
-                        requiredMode = Schema.RequiredMode.REQUIRED,
-                        example = "Опис крутого чату"
-                )
+        @Schema(
+                description = "Опис чату",
+                requiredMode = Schema.RequiredMode.REQUIRED,
+                example = "Опис крутого чату"
         )
         String description,
+
+        @ArraySchema(
+                arraySchema = @Schema(
+                        description = "Користувачі чату",
+                        implementation = GetUserPayload.class,
+                        requiredMode = Schema.RequiredMode.REQUIRED
+                )
+        )
         List<GetUserPayload> users
 ) {
 }
