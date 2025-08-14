@@ -27,13 +27,13 @@ public record GetChannelPayload(
         Date updatedAt,
         @Schema(
                 description = "Назва чату",
-                requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+                requiredMode = Schema.RequiredMode.REQUIRED,
                 example = "Крутий чат"
         )
         String name,
         @Schema(
                 description = "Опис чату",
-                requiredMode = Schema.RequiredMode.NOT_REQUIRED,
+                requiredMode = Schema.RequiredMode.REQUIRED,
                 example = "Опис крутого чату"
         )
         String description,
