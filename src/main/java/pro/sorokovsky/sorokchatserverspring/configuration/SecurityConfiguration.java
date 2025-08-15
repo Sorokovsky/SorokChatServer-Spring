@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/authentication/register", "/authentication/login").anonymous()
-                        .requestMatchers("/swagger-ui/**", "/v3/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/**", "/chat/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
