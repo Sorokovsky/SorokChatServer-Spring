@@ -31,7 +31,7 @@ public class MessageMapperTests {
         //given
         final var entity = getMessageEntity();
         final var expected = getMessageModel();
-        doReturn(getUserModel()).when(userMapper).toModel(entity.getAuthor());
+        doReturn(getUserModel()).when(userMapper).toModel(getUserEntity());
 
         //when
         final var mapped = messageMapper.toModel(entity);
@@ -45,7 +45,7 @@ public class MessageMapperTests {
         //given
         final var model = getMessageModel();
         final var expected = getMessageEntity();
-        doReturn(getUserEntity()).when(userMapper).toEntity(model.getAuthor());
+        doReturn(getUserEntity()).when(userMapper).toEntity(getUserModel());
 
         //when
         final var mapped = messageMapper.toEntity(model);
@@ -61,8 +61,9 @@ public class MessageMapperTests {
         final var newState = getNewStateWithText();
         final var expected = getMergedWithText();
         try (var mockedInstant = mockStatic(Instant.class)) {
-            doReturn(getUserEntity()).when(userMapper).toEntity(oldState.getAuthor());
+            doReturn(getUserEntity()).when(userMapper).toEntity(getUserModel());
             mockedInstant.when(Instant::now).thenReturn(NOW_INSTANT);
+
             //when
             final var merged = messageMapper.merge(oldState, newState);
 
@@ -78,7 +79,7 @@ public class MessageMapperTests {
         final var newState = getNewStateWithNullText();
         final var expected = getMergedWithNullText();
         try (var mockedInstant = mockStatic(Instant.class)) {
-            doReturn(getUserEntity()).when(userMapper).toEntity(oldState.getAuthor());
+            doReturn(getUserEntity()).when(userMapper).toEntity(getUserModel());
             mockedInstant.when(Instant::now).thenReturn(NOW_INSTANT);
             //when
             final var merged = messageMapper.merge(oldState, newState);
@@ -95,7 +96,7 @@ public class MessageMapperTests {
         final var newState = getNewStateWithEmptyText();
         final var expected = getMergedWithEmptyText();
         try (var mockedInstant = mockStatic(Instant.class)) {
-            doReturn(getUserEntity()).when(userMapper).toEntity(oldState.getAuthor());
+            doReturn(getUserEntity()).when(userMapper).toEntity(getUserModel());
             mockedInstant.when(Instant::now).thenReturn(NOW_INSTANT);
             //when
             final var merged = messageMapper.merge(oldState, newState);

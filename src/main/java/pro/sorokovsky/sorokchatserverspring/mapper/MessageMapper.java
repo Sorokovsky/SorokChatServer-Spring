@@ -39,14 +39,13 @@ public class MessageMapper {
     }
 
     public MessageEntity merge(MessageModel oldState, UpdateMessagePayload newState) {
-        final var text = (newState.text() == null || newState.text().isBlank()) ? oldState.getText() : newState.text();
         return MessageEntity
                 .builder()
                 .id(oldState.getId())
                 .createdAt(oldState.getCreatedAt())
                 .updatedAt(Date.from(Instant.now()))
                 .author(userMapper.toEntity(oldState.getAuthor()))
-                .text(text)
+                .text(chooseString(oldState.getText(), newState.text()))
                 .build();
     }
 
@@ -59,5 +58,9 @@ public class MessageMapper {
                 .author(userMapper.toEntity(user))
                 .text(payload.text())
                 .build();
+    }
+
+    private String chooseString(String oldest, String newest) {
+        return newest == null || newest.isBlank() ? oldest : newest;
     }
 }
