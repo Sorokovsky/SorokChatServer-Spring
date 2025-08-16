@@ -59,6 +59,18 @@ public class UserMapper {
                 .build();
     }
 
+    public GetUserPayload toGet(UserModel model) {
+        return new GetUserPayload(
+                model.getId(),
+                model.getCreatedAt(),
+                model.getUpdatedAt(),
+                model.getEmail(),
+                model.getFirstName(),
+                model.getLastName(),
+                model.getMiddleName()
+        );
+    }
+
     public UserEntity merge(UserModel oldState, UpdateUserPayload newState) {
         return UserEntity
                 .builder()
@@ -81,17 +93,5 @@ public class UserMapper {
     private String choosePassword(String older, String newer) {
         if (newer == null || newer.isBlank()) return older;
         return passwordEncoder.encode(newer);
-    }
-
-    public GetUserPayload toGet(UserModel model) {
-        return new GetUserPayload(
-                model.getId(),
-                model.getCreatedAt(),
-                model.getUpdatedAt(),
-                model.getEmail(),
-                model.getFirstName(),
-                model.getLastName(),
-                model.getMiddleName()
-        );
     }
 }
