@@ -1,6 +1,5 @@
 package sorokovsky.sorokchatserverspring.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +15,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static sorokovsky.sorokchatserverspring.util.UsersUtil.getUserModel;
@@ -50,6 +50,6 @@ public class JwtAuthenticationUserDetailsServiceTests {
         final var result = service.loadUserDetails(token);
 
         //then
-        Assertions.assertEquals(user, result);
+        assertEquals(user, result);
     }
 }
