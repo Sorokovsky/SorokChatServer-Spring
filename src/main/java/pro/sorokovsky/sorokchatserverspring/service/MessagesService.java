@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MessagesService {
-    private final ChannelsService channelsService;
     private final MessageMapper mapper;
     private final MessagesRepository repository;
 

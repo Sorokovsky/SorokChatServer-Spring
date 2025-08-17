@@ -45,6 +45,13 @@ public class MessagesUtil {
         return message;
     }
 
+    public static MessageModel getMergedModelWithText() {
+        final var newState = getNewStateWithText();
+        final var message = getMessageModel();
+        message.setText(newState.text());
+        return message;
+    }
+
     public static UpdateMessagePayload getNewStateWithNullText() {
         return new UpdateMessagePayload(null);
     }
