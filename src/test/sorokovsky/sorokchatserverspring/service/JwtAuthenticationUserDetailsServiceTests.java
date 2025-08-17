@@ -18,6 +18,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static sorokovsky.sorokchatserverspring.util.UsersUtil.getUserModel;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,5 +52,17 @@ public class JwtAuthenticationUserDetailsServiceTests {
 
         //then
         assertEquals(user, result);
+    }
+
+    @Test
+    public void loadUserDetails_ifPrincipalIsTokenButUserNotFound_shouldThrowUsernameNotFoundException() {
+        //given
+        final var now = Instant.now();
+        final var accessToken = new Token(UUID.randomUUID(), "user", now, now.plus(Duration.ofMinutes(15)));
+        final var token = new PreAuthenticatedAuthenticationToken(accessToken, accessToken);
+        doThrow(UsernameNotFoundException.class).when(usersService).loadUserByUsername(accessToken.subject());
+
+        //when/then
+        assertThrows(UsernameNotFoundException.class, () -> service.loadUserDetails(token));
     }
 }
