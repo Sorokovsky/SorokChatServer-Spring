@@ -41,6 +41,32 @@ public class ChannelsUtil {
                 .build();
     }
 
+    public static ChannelModel getChannelWithoutUsers() {
+        return ChannelModel
+                .builder()
+                .id(1L)
+                .createdAt(Date.from(NOW_INSTANT))
+                .updatedAt(Date.from(NOW_INSTANT))
+                .name("Крутий чат")
+                .description("Дуже крутий чат")
+                .users(List.of())
+                .messages(List.of(getMessageModel()))
+                .build();
+    }
+
+    public static ChannelEntity getChannelEntityWithoutUsers() {
+        return ChannelEntity
+                .builder()
+                .id(1L)
+                .createdAt(Date.from(NOW_INSTANT))
+                .updatedAt(Date.from(NOW_INSTANT))
+                .name("Крутий чат")
+                .description("Дуже крутий чат")
+                .users(List.of())
+                .messages(List.of(getMessageEntity()))
+                .build();
+    }
+
     public static NewChannelPayload getNewChannelPayload() {
         return new NewChannelPayload("Крутий чат", "Дуже крутий чат");
     }
@@ -70,6 +96,19 @@ public class ChannelsUtil {
                 .description("Мій крутий чат")
                 .users(List.of(getUserModel()))
                 .messages(List.of(getMessageModel()))
+                .build();
+    }
+
+    public static ChannelEntity getUpdatedChannelEntity() {
+        return ChannelEntity
+                .builder()
+                .id(1L)
+                .createdAt(Date.from(NOW_INSTANT))
+                .updatedAt(Date.from(NOW_INSTANT))
+                .name("Мій чат")
+                .description("Мій крутий чат")
+                .users(List.of(getUserEntity()))
+                .messages(List.of(getMessageEntity()))
                 .build();
     }
 

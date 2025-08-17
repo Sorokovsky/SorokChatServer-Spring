@@ -12,6 +12,7 @@ import pro.sorokovsky.sorokchatserverspring.model.ChannelModel;
 import pro.sorokovsky.sorokchatserverspring.model.UserModel;
 import pro.sorokovsky.sorokchatserverspring.repository.ChannelsRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,7 +63,9 @@ public class ChannelsService {
     public ChannelModel addUser(long channelId, long userId) {
         final var channel = getById(channelId).orElseThrow(ChannelNotFoundException::new);
         final var user = usersService.getById(userId).orElseThrow(UserNotFoundException::new);
-        channel.getUsers().add(user);
+        final var newUsers = new ArrayList<>(channel.getUsers());
+        newUsers.add(user);
+        channel.setUsers(newUsers);
         final var updated = repository.save(mapper.toEntity(channel));
         return mapper.toModel(updated);
     }
