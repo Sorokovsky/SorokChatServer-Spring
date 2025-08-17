@@ -83,6 +83,22 @@ public class UsersUtil {
                 .build();
     }
 
+    public static UserModel getMergedModelWithPassword() {
+        final var oldState = getUserModel();
+        final var newState = getNewStateWithPassword();
+        return UserModel
+                .builder()
+                .id(oldState.getId())
+                .email(oldState.getEmail())
+                .password("new hashed password")
+                .middleName(newState.middleName())
+                .firstName(newState.firstName())
+                .lastName(newState.lastName())
+                .createdAt(oldState.getCreatedAt())
+                .updatedAt(Date.from(NOW_INSTANT))
+                .build();
+    }
+
     public static UpdateUserPayload getNewStateWithNullPassword() {
         return new UpdateUserPayload(
                 "",
