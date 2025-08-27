@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.annotation.SecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.authentication.AuthenticationFilter;
 import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
 import pro.sorokovsky.sorokchatserverspring.factory.AccessTokenFactory;
 import pro.sorokovsky.sorokchatserverspring.factory.RefreshTokenFactory;
@@ -44,6 +44,6 @@ public class RefreshTokensConfigurer implements SecurityConfigurer<DefaultSecuri
                 usersService
         );
 
-        builder.addFilterAfter(filter, CsrfFilter.class);
+        builder.addFilterAfter(filter, AuthenticationFilter.class);
     }
 }

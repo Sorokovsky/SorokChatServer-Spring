@@ -8,8 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pro.sorokovsky.sorokchatserverspring.constants.AuthenticationVariants;
 import pro.sorokovsky.sorokchatserverspring.deserializer.TokenDeserializer;
@@ -36,30 +39,33 @@ public class RefreshTokensFilter extends OncePerRequestFilter {
     private final TokenSerializer refreshTokenSerializer;
     private final TokenDeserializer refreshTokenDeserializer;
     private final UsersService usersService;
+    private RequestMatcher requestMatcher = new RegexRequestMatcher("/authentication/logout", HttpMethod.DELETE.name());
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final var savedAuthentication = SecurityContextHolder.getContext().getAuthentication();
-        try {
-            final var oldStringRefreshToken = refreshTokenDeserializer.apply(refreshTokenStorage.get(request).orElse(null));
-            if (oldStringRefreshToken != null) {
-                UserModel user;
-                if (savedAuthentication != null && savedAuthentication.getPrincipal() instanceof UserModel authenticationUser)
-                    user = authenticationUser;
-                else user = usersService.getByEmail(oldStringRefreshToken.subject()).orElse(null);
-                if (user != null) {
-                    final var authentication = UsernamePasswordAuthenticationToken.authenticated(user.getEmail(), user.getPassword(), user.getAuthorities());
-                    final var newRefreshToken = refreshTokenFactory.apply(authentication);
-                    final var newAccessToken = accessTokenFactory.apply(newRefreshToken);
-                    accessTokenStorage.set(accessTokenSerializer.apply(newAccessToken), response, newAccessToken.expiresAt());
-                    refreshTokenStorage.set(refreshTokenSerializer.apply(newRefreshToken), response, newRefreshToken.expiresAt());
-                    LOGGER.info("Refresh token stored successfully");
+        if(!requestMatcher.matches(request)) {
+            final var savedAuthentication = SecurityContextHolder.getContext().getAuthentication();
+            try {
+                final var oldStringRefreshToken = refreshTokenDeserializer.apply(refreshTokenStorage.get(request).orElse(null));
+                if (oldStringRefreshToken != null) {
+                    UserModel user;
+                    if (savedAuthentication != null && savedAuthentication.getPrincipal() instanceof UserModel authenticationUser)
+                        user = authenticationUser;
+                    else user = usersService.getByEmail(oldStringRefreshToken.subject()).orElse(null);
+                    if (user != null) {
+                        final var authentication = UsernamePasswordAuthenticationToken.authenticated(user.getEmail(), user.getPassword(), user.getAuthorities());
+                        final var newRefreshToken = refreshTokenFactory.apply(authentication);
+                        final var newAccessToken = accessTokenFactory.apply(newRefreshToken);
+                        accessTokenStorage.set(accessTokenSerializer.apply(newAccessToken), response, newAccessToken.expiresAt());
+                        refreshTokenStorage.set(refreshTokenSerializer.apply(newRefreshToken), response, newRefreshToken.expiresAt());
+                        LOGGER.info("Refresh token stored successfully");
+                    }
                 }
+            } catch (TokenNotParsedException | InvalidTokenException exception) {
+                LOGGER.info("Refresh token parsing error: {}", exception.getMessage());
+                response.addHeader(HttpHeaders.WWW_AUTHENTICATE, AuthenticationVariants.Cookie.name());
             }
-        } catch (TokenNotParsedException | InvalidTokenException exception) {
-            LOGGER.info("Refresh token parsing error: {}", exception.getMessage());
-            response.addHeader(HttpHeaders.WWW_AUTHENTICATE, AuthenticationVariants.Cookie.name());
         }
         filterChain.doFilter(request, response);
     }
